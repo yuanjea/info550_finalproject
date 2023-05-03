@@ -18,7 +18,9 @@ import random
 import util
 import imp
 
+from pacman import Directions
 from game import Agent
+from mcts import MCTS, Node 
 
 
 class ReflexAgent(Agent):
@@ -392,32 +394,15 @@ def betterEvaluationFunction(currentGameState):
 better = betterEvaluationFunction
 
 class MCTSAgent(MultiAgentSearchAgent):
-    def __init__(self, max_iterations=50):
+    def __init__(self, max_iterations=50, exploration_parameter=10):
         self.max_iterations = max_iterations
+        self.mcts = MCTS(exploration_parameter=exploration_parameter)
 
     def getAction(self, gameState):
-        root = self.Node(state=gameState)
+        root = Node(state=gameState)
         for i in range(self.max_iterations):
-            node = root
             state = gameState.deepCopy()
-            # ...
+            action = self.mcts.search(state, self.max_iterations).get_action()
+            gameState = state.generateSuccessor(0, action)
+        return action
 
-def createTeam(firstIndex, secondIndex, isRed,
-               first='MCTSAgent', second='RandomAgent'):
-    return [eval(first)(max_iterations=100), eval(second)()]
-
-# class MCTSAgent(MultiAgentSearchAgent):
-#     def __init__(self, num_iterations=100, exploration_parameter=1.0):
-#         self.num_iterations = num_iterations
-#         self.exploration_parameter = exploration_parameter
-
-#     def getAction(self, gameState):
-#         # create the MCTS object
-#         mcts = self.MCTS(self.exploration_parameter)
-
-#         # run the search algorithm
-#         for i in range(self.num_iterations):
-#             mcts.search(gameState, self.index)
-
-#         # get the best action from the root node
-#         return mcts.get_best_action(gameState)

@@ -86,6 +86,19 @@ class GameState:
         return tmp
     getAndResetExplored = staticmethod(getAndResetExplored)
 
+    def is_terminal(self):
+        # return True if the game is over, False otherwise
+        return self.getNumFood() == 0
+    
+    def get_random_next_state(self):
+        # return a randomly selected successor state
+        legal_actions = self.getLegalActions()
+        if len(legal_actions) == 0:
+            return self
+        else:
+            action = random.choice(legal_actions)
+            return self.generateSuccessor(0, action)
+
     def getLegalActions(self, agentIndex=0):
         """
         Returns the legal actions for the agent specified.

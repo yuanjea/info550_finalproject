@@ -2,51 +2,48 @@ import random
 import math
 
 class Node:
-    def __init__(self, state):
+    def __init__(self, state, parent = None):
         self.state = state
-        self.parent = None
+        self.parent = parent
         self.children = []
         self.num_visits = 0
         self.total_reward = 0
 
-def expand(self):
-    # generate all possible next states
-    next_states = self.state.get_next_states()
+    def expand(self):
+        actions = self.state.getLegalActions()
+        for action in actions:
+            child_state = self.state.generateSuccessor(0, action)
+            child_node = Node(child_state, self)
+            self.children.append(child_node)
 
-    # create a child node for each next state
-    for next_state in next_states:
-        child_node = Node(next_state)
-        child_node.parent = self
-        self.children.append(child_node)
+    def select_child(self, exploration_parameter):
+        # use the UCB formula to select the child with the highest UCB value
+        best_child = None
+        best_ucb_value = -float('inf')
+        for child in self.children:
+            if child.num_visits == 0:
+                return child
+            else:
+                ucb_value = (child.total_reward / child.num_visits) + exploration_parameter * math.sqrt(math.log(self.num_visits) / child.num_visits)
+                if ucb_value > best_ucb_value:
+                    best_ucb_value = ucb_value
+                    best_child = child
+        return best_child
 
-def select_child(self, exploration_parameter):
-    # use the UCB formula to select the child with the highest UCB value
-    best_child = None
-    best_ucb_value = -float('inf')
-    for child in self.children:
-        if child.num_visits == 0:
-            return child
-        else:
-            ucb_value = (child.total_reward / child.num_visits) + exploration_parameter * math.sqrt(math.log(self.num_visits) / child.num_visits)
-            if ucb_value > best_ucb_value:
-                best_ucb_value = ucb_value
-                best_child = child
-    return best_child
+    def simulate(self):
+        # simulate the game from the current state to the end
+        current_state = self.state
+        while not current_state.is_terminal():
+            current_state = current_state.get_random_next_state()
+        # return the reward
+        return current_state.get_reward()
 
-def simulate(self):
-    # simulate the game from the current state to the end
-    current_state = self.state
-    while not current_state.is_terminal():
-        current_state = current_state.get_random_next_state()
-    # return the reward
-    return current_state.get_reward()
-
-def update(self, reward):
-    # update the statistics of the current node and its ancestors
-    self.num_visits += 1
-    self.total_reward += reward
-    if self.parent is not None:
-        self.parent.update(reward)
+    def update(self, reward):
+        # update the statistics of the current node and its ancestors
+        self.num_visits += 1
+        self.total_reward += reward
+        if self.parent is not None:
+            self.parent.update(reward)
 
 class MCTS:
     def __init__(self, exploration_parameter):
