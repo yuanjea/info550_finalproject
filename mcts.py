@@ -10,14 +10,14 @@ class Node:
         self.total_reward = 0
 
     def expand(self):
-        actions = self.state.getLegalActions()
+        actions = self.state.getLegalActions() ### getSuccesors ???
         for action in actions:
             child_state = self.state.generateSuccessor(0, action)
             child_node = Node(child_state, self)
             self.children.append(child_node)
 
     def select_child(self, exploration_parameter):
-        # use the UCB formula to select the child with the highest UCB value
+        # use the UCB formula to select the child with the highest UCB value    
         best_child = None
         best_ucb_value = -float('inf')
         for child in self.children:
@@ -34,6 +34,7 @@ class Node:
         # simulate the game from the current state to the end
         current_state = self.state
         while not current_state.is_terminal():
+            print("problem-1")
             current_state = current_state.get_random_next_state()
         # return the reward
         return current_state.get_reward()
@@ -57,7 +58,9 @@ class MCTS:
         for i in range(num_iterations):
             # select a child node to expand
             current_node = root_node
+            print("problem-1")
             while not current_node.state.is_terminal():
+                print("problem-2")
                 if len(current_node.children) == 0:
                     current_node.expand()
                     break
@@ -67,14 +70,20 @@ class MCTS:
             # simulate the game from the selected child node
             reward = current_node.simulate()
             
+            print("was here")
             # update the statistics of the selected child node and its ancestors
             current_node.update(reward)
-        
+
         # return the action with the highest expected reward
         best_child = None
         best_reward = -float('inf')
         for child in root_node.children:
+            print(child.total_reward)
+            print("problem-3")
             if child.total_reward > best_reward:
                 best_reward = child.total_reward
                 best_child = child
+        print(best_child.state.getLegalActions())
         return best_child.state.get_action()
+        #return best_child.state.getLegalActions()
+  
