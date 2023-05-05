@@ -98,6 +98,13 @@ class GameState:
         else:
             action = random.choice(legal_actions)
             return self.generateSuccessor(0, action)
+        
+    def get_reward(self):
+        # method returns the current score if the game is terminal, otherwise it returns 0.
+        if self.is_terminal:
+            return self.data.score
+        else:
+            return 0
 
     def getLegalActions(self, agentIndex=0):
         """

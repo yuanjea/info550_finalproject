@@ -397,12 +397,13 @@ class MCTSAgent(MultiAgentSearchAgent):
     def __init__(self, max_iterations=50, exploration_parameter=10):
         self.max_iterations = max_iterations
         self.mcts = MCTS(exploration_parameter=exploration_parameter)
-
+    
     def getAction(self, gameState):
         root = Node(state=gameState)
         for i in range(self.max_iterations):
             state = gameState.deepCopy()
-            action = self.mcts.search(state, self.max_iterations).get_action()
-            gameState = state.generateSuccessor(0, action)
-        return action
+            selected_node = self.mcts.search(state, self.max_iterations)
+            gameState = state.generateSuccessor(0, selected_node.state.get_action())
+        return selected_node.state.get_action()
+
 
