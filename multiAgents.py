@@ -19,6 +19,7 @@ import util
 import imp
 
 from pacman import Directions
+from pacman import PacmanRules
 from game import Agent
 from mcts import MCTS, Node 
 
@@ -397,13 +398,27 @@ class MCTSAgent(MultiAgentSearchAgent):
     def __init__(self, max_iterations=50, exploration_parameter=10):
         self.max_iterations = max_iterations
         self.mcts = MCTS(exploration_parameter=exploration_parameter)
+        self.PacmanRules = PacmanRules
     
+    # def getAction(self, gameState):
+    #     root = Node(state=gameState)
+    #     for i in range(self.max_iterations):
+    #         state = gameState.deepCopy()
+    #         selected_node = self.mcts.search(state, self.max_iterations)
+    #         print("Selected Node : ", selected_node)
+    #         gameState = state.generateSuccessor(0, selected_node.state.get_action())
+    #     return selected_node.state.get_action()
+
     def getAction(self, gameState):
         root = Node(state=gameState)
         for i in range(self.max_iterations):
             state = gameState.deepCopy()
             selected_node = self.mcts.search(state, self.max_iterations)
-            gameState = state.generateSuccessor(0, selected_node.state.get_action())
+            print("Selected Node : ", selected_node)
+            action = selected_node.state.get_action()
+            legal_actions = self.PacmanRules.getLegalActions(state)
+            if action not in legal_actions:
+                continue
+            gameState = state.generateSuccessor(0, action)
         return selected_node.state.get_action()
-
 

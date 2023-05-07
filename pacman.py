@@ -90,6 +90,10 @@ class GameState:
         # return True if the game is over, False otherwise
         return self.getNumFood() == 0
     
+    def get_action(self):
+        legal_actions = self.getLegalActions()
+        return random.choice(legal_actions) if legal_actions else None
+    
     def get_random_next_state(self):
         # return a randomly selected successor state
         legal_actions = self.getLegalActions()

@@ -8,6 +8,7 @@ class Node:
         self.children = []
         self.num_visits = 0
         self.total_reward = 0
+        #self.untried_actions = self.PacmanRules.getLegalActions(state)
 
     def expand(self):
         actions = self.state.getLegalActions() ### getSuccesors ???
@@ -15,6 +16,7 @@ class Node:
             child_state = self.state.generateSuccessor(0, action)
             child_node = Node(child_state, self)
             self.children.append(child_node)
+            
 
     def select_child(self, exploration_parameter):
         # use the UCB formula to select the child with the highest UCB value    
@@ -61,6 +63,7 @@ class MCTS:
             print("problem-1")
             while not current_node.state.is_terminal():
                 print("problem-2")
+                # No need to expand if it is a terminal state 
                 if len(current_node.children) == 0:
                     current_node.expand()
                     break
@@ -74,16 +77,31 @@ class MCTS:
             # update the statistics of the selected child node and its ancestors
             current_node.update(reward)
 
-        # return the action with the highest expected reward
+            # check if the maximum number of iterations has been reached
+            if i == num_iterations - 1:
+                break
+
+        # return the node with the highest expected reward
         best_child = None
         best_reward = -float('inf')
         for child in root_node.children:
-            print(child.total_reward)
-            print("problem-3")
             if child.total_reward > best_reward:
                 best_reward = child.total_reward
                 best_child = child
-        print(best_child.state.getLegalActions())
-        return best_child.state.get_action()
-        #return best_child.state.getLegalActions()
+
+        return best_child
+
+        # # return the action with the highest expected reward
+        # best_child = None
+        # best_reward = -float('inf')
+        # for child in root_node.children:
+        #     print(child.total_reward)
+        #     print("problem-3")
+        #     if child.total_reward > best_reward:
+        #         best_reward = child.total_reward
+        #         best_child = child
+        # print("Best Child : ", best_child)
+        # print("BestChild.state.get_action : ", best_child.state.get_action())
+        # return best_child.state.get_action()
+
   
