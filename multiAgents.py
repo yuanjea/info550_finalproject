@@ -17,6 +17,7 @@ from math import inf
 import random
 import util
 import imp
+from numpy import sqrt
 
 from pacman import Directions
 from pacman import PacmanRules
@@ -395,7 +396,7 @@ def betterEvaluationFunction(currentGameState):
 better = betterEvaluationFunction
 
 class MCTSAgent(MultiAgentSearchAgent):
-    def __init__(self, max_iterations=50, exploration_parameter=10):
+    def __init__(self, max_iterations=50, exploration_parameter=sqrt(2)):
         self.max_iterations = max_iterations
         self.mcts = MCTS(exploration_parameter=exploration_parameter)
         self.PacmanRules = PacmanRules
